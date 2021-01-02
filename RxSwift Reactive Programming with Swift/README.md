@@ -3,7 +3,7 @@
 “비동기 콜백 기반 API를 사용해 본 적이 있다면 코드베이스 전체에서 응답 데이터를 임시로 처리 한 적이 있을 것 입니다. 그리고 모든 것을 단위 테스트 할 방법이 없다고 결정했을 가능성이 높습니다. 하지만 더 나은 방법이 있습니다. Rx라고합니다!”
 — RxSwift를 만든 Krunoslav Zaher
 
-## [Section 1: Getting Started with RxSwift]()
+## [Section 1: Getting Started with RxSwift](https://github.com/jaehui327/RxSwift/tree/main/RxSwift%20Reactive%20Programming%20with%20Swift/Section%201%20-%20Getting%20Started%20with%20RxSwift#section-1-getting-started-with-rxswift)
 
 RxSwift 기본 사항을 다룹니다. 이 섹션을 건너 뛰지 마십시오. 다음 섹션에서 작동하는 방법과 이유를 잘 이해해야합니다.
 
