@@ -253,6 +253,221 @@ Rx 코드의 세 가지 구성 요소는 다음과 같다:
 
 ## Observables
 
+`Observable<T>` 클래스는 데이터 T의 불변의 스냅샷을 "전달"할 수 있는 일련의 이벤트를 비동기적으로 생성하는 기능이다.
+
+시간이 지남에 따라 다른 클래스가 발생시키는 값에 대한 클래스 가입을 허용한다.
+
+한 개 이상의 옵저버가 모든 이벤트에 실시간으로 반응하여 앱 UI를 업데이트 하거나, 
+
+새로운 데이터와 들어오는 데이터를 처리하고 활용할 수 있도록 한다.
+
+`ObservableType` 프로토콜은 매우 간단하다.
+
+`Observable` 은 오직 세 가지 유형의 이벤트만 내보내거나 수신할 수 있다.
+
+1. A `next` event
+
+    최신 또는 "다음" 데이터 값을 "전달"하는 이벤트이다. 옵저버는 값을 "인식"한다.
+
+2. A `completed` event
+
+    이벤트 시퀀스를 성공적으로 종료시킨다. `Observable` 이 life-cycle을 성공적으로 완료햇으며 다른 이벤트를 발생시키지 않는다는 의미이다.
+
+3. An `error` event
+
+    오류로 종료되면 다른 이벤트를 내보내지 않는다.
+
+비동기 이벤트에 대한 타임 라인을 다음과 같이 시각화할 수 있다.
+
+![https://assets.alexandria.raywenderlich.com/books/rxs/images/f8d3cff7dafeb96562b1d9031cf41b30959aea0c036be76b0bb03070e392fed9/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/f8d3cff7dafeb96562b1d9031cf41b30959aea0c036be76b0bb03070e392fed9/original.png)
+
+클래스가 서로 통신 할 수 있도록 델리게이트 프로토콜을 사용하거나 클로저를 삽입 할 필요가 없다.
+
+![https://assets.alexandria.raywenderlich.com/books/rxs/images/5e255ce9e0cb680c862ff81cddb3f721957ced5c1fa019660974b265367f0fd2/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/5e255ce9e0cb680c862ff81cddb3f721957ced5c1fa019660974b265367f0fd2/original.png)
+
+실제 상황에 대한 아이디어를 얻으려면 두 가지 유형의 관찰 가능한 시퀀스인 `finite` 와 `infinite` 를 살펴보아야 한다.
+
+### 1. Finite observable sequneces
+
+iOS 앱에서 인터넷으로부터 파일을 다운로드하는 코드를 보자.
+
+1. 먼저 다운로드를 시작하고 들어오는 데이터를 관찰한다
+2. 파일의 일부가 도착할 때 박복적으로 데이터 덩어리를 받는다
+3. 네트워크 연결이 끊어지면 다운로드가 중지되고 오류와 함께 연결 시간이 초과된다
+4. 또는 코드가 모든 파일의 데이터를 다운로드하면 성공적으로 완료된다
+
+이 워크플로우는 일반적인 observable의 생명 주기를 정학하게 설명한다.
+
+```swift
+API.download(file: "http://www...")
+   .subscribe(
+     onNext: { data in
+      // Append data to temporary file
+     },
+     onError: { error in
+       // Display error to user
+     },
+     onCompleted: {
+       // Use downloaded file
+     }
+   )
+```
+
+1.  `API.download(file:)` 는 데이터 덩어리가 네트워크를 통해 들어올 때 데이터 값을 내보내는 `Observable<Data>` 인스턴스를 반환한다.
+2. `onNext` 클로저를 제공하여 `next` event를 수행한다. 다운로드 예제에서는 디스크에 저장된 임시 파일에 데이터를 추가하는 작업이다.
+3. `onError` 클로저를 제공하여 에러를 받아보도록 한다. `error.localizedDescription` 을 표시하는 등의 작업이 가능하다.
+4. 완료된 이벤트를 처리하기 위해 새 뷰 컨트롤러를 눌러 다운로드한 파일 또는 앱에서 지시하는 내용을 표시할 수 있는 `onCompleted` 클로저를 제공한다.
+
+### 2. Infinite observable sequences
+
+파일 다운로드와 같은 활동과 달리, 단순히 무한한 시퀀스도 있습니다.
+
+UI 이벤트는 종종 무한한 observable 시퀀스입니다.
+
+예를 들어 앱의 기기 방향 변경에 반응하는 데 필요한 코드를 보자.
+
+1. `NotificationCenter` 의 `UIDeviceOrientationDidChange` 알림에 옵저버로 클래스를 추가한다.
+2. 방향 변경을 처리하기 위해 메서드 콜백을 제공해야 한다. 현재 방향을 `UIDevice` 에서 가져와 최신 값에 따라 반응해야 한다.
+
+기기 방향 변경 반응에는 끝이 정해져 있지 않다.
+
+시퀀스는 사실상 무한하고 상태가 있으므로 관찰을 시작할 때 항상 초기 값을 갖게 된다.
+
+![https://assets.alexandria.raywenderlich.com/books/rxs/images/37f39e4b50e8f7ba826a8fd6c8293695a8bb55e51a4c9a15b8a9e1590fd0c20a/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/37f39e4b50e8f7ba826a8fd6c8293695a8bb55e51a4c9a15b8a9e1590fd0c20a/original.png)
+
+→ 사용자가 기기를 회전하지 않는 경우가 있지만 그렇다고 이벤트 시퀀스가 종료되는 것은 아니고, 이벤트가 발생하지 않을 뿐이다.
+
+```swift
+UIDevice.rx.orientation
+  .subscribe(onNext: { current in
+    switch current {
+    case .landscape:
+      // Re-arrange UI for landscape
+    case .portrait:
+      // Re-arrange UI for portrait
+    }
+  })
+```
+
+→ `UIDevice.rx.orientation` 을 생성하는 가상의 제어 속성으로, `Observalbe<Orientation>` 을 구독하고 현재 방향에 따라 앱 UI를 업데이트한다.
+
+이러한 이벤트는 옵저버블에서 무한하기 때문에 `onError` 및 `onCompeleted` 파라미터를 건너뛴다.
+
 ## Operators
 
+옵저버블 클래스 구현에는 복잡한 논리를 구현하기 위해 함께 구성될 수 있는 비동기 작업 및 이벤트 조작의 개별 부분을 추상화하는 많은 메서드가 포함된다.
+
+이러한 메서드는 매우 독립적으로 구성 가능하기 때문에 이러한 메서드를 `Operator` 라고 한다.
+
+연산자는 비동기 입력을 받아들이고 사이드 이펙트없이 출력만 생성하기 때문에 퍼즐 조각처럼 서로 맞물려 더 큰 조각을 만들어낼 수 있다.
+
+예를 들어 다음과 같은 수학적 표현이 있다: `(5 + 6) * 10 - 2`
+
+연산자 `*`, `( )`, `+` 및 `-`를 미리 정의된 순서대로 입력 데이터 조각에 적용하고 출력을 취하여 식이 해결될 때까지 계속 처리할 수 있다.
+
+입출력을 처리하도록 옵저버블 입력 부분에 식이 결과 값을 낼 때 까지 Rx 오퍼레이터를 사용하도록 적용할 수 있다. 오퍼레이터를 사용하여 사이드 이펙트를 발생시킬 수 있다.
+
+```swift
+UIDevice.rx.orientation
+  .filter { $0 != .landscape }
+  .map { _ in "Portrait is the best!" }
+  .subscribe(onNext: { string in
+    showAlert(text: string)
+  })
+```
+
+`UIDevice.rx.orientation` 이  `.landscape` 또는 `.portrait` 값을 생성할 때 마다 RxSwift는 두 개의 연산자를 해당 데이터에 적용한다.
+
+![](./images/5.png)
+
+1. `filter` 는 `.landscape` 가 아닌 값만 통과시킨다. 기기가 가로 모드인 경우 이러한 이벤트를 표시하지 않으므로 코드가 실행되지 않는다.
+2. `.portrait` 값의 경우 `map` 오퍼레이터는 방향 유형 입력을 가져와 문자열 출력으로 변환한다. - "Portarait is the best!" 라는 텍스트
+3. 마지막으로 `subscribe` 을 통해 다음 이벤트인 문자열 값을 전송하고 메소드를 호출하여 해당 텍스트를 화면에 표시한다.
+
 ## Schedulers
+
+스케줄러는 Rx가 dispatch queue 또는 equivalent queue와 동일하다.
+
+특정 작업의 실행 컨텍스트를 정의할 수 있어 사용하기 훨씬 더 쉽다.
+
+예를 들어 Grand Central Dispatch를 사용하여 주어진 queue에서 코드를 순서화하는 `SerialDispatchQueueScheduler` 에서 다음 이벤트를 관찰하도록 지정할 수 있다.
+
+`ConcurrentDispatchQueueScheduler` 는 코드를 동시에 실행한다. `OperationQueueScheduler` 를 사용하면 지정된 `NSOperationQueue` 에서 구독을 예약할 수 있다.
+
+RxSwift는 `subscrption` 과 `scheduler` 사이에서 발송자 역할을 하여 작업 내용을 올바른 컨텍스트로 전송하고 서로의 출력으로 원활하게 작업할 수 있도록 한다.
+
+![https://assets.alexandria.raywenderlich.com/books/rxs/images/28bdd14bbb8cebcb00fcdc724a10d4f34c19a2b14bcdda5c7ed1f59af513b6f4/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/28bdd14bbb8cebcb00fcdc724a10d4f34c19a2b14bcdda5c7ed1f59af513b6f4/original.png)
+
+1. `network subscription` 은 "사용자 지정 `NSOperation` 기반 스케줄러"에서 실행되는 코드로 시작한다.
+2. 이 블록에 의한 데이터 출력은 다른 스케줄러에서 실행되는 다음 블록의 입력 역할을 하며, 이는 "concurrent background GCD queue"에서 실행된다.
+3. "Main thread scheduler"에서 새 데이터로 UI를 업데이트하기 위해 마지막 블록이 schedule 된다.
+
+# 1.3 앱 아키텍처
+
+RxSwift와 `MVVM 아키텍처` 는 특히 잘 어울린다. 
+
+ViewModel을 사용하면 `Observable<T>` 프로퍼티를 드러낼 수 있으므로 ViewController의 glue code에서 UIKit 컨트롤에 직접 바인딩 할 수 있다.
+
+이렇게하면 모델 데이터를 UI에 매우 간단하게 표현하고 코딩할 수 있다.
+
+![https://assets.alexandria.raywenderlich.com/books/rxs/images/0625dc8cc2e93bdc9324fafea84fadaaf4729dfd39d114996486bb185bdb53e0/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/0625dc8cc2e93bdc9324fafea84fadaaf4729dfd39d114996486bb185bdb53e0/original.png)
+
+# 1.4 RxCocoa
+
+UIKit 및 Cocoa의 개발을 지원하는 모든 클래스를 포함하는 RxSwift의 companion library
+
+다양한 UI 이벤트를 subscribe할 수 있도록 많은 UI 구성 요소에 reactive extension을 추가한다.
+
+예를 들어 RxCocoa를 사용하여 `UISwitch` 의 상태 변경을 subscribe 하는 것은 매우 쉽다.
+
+```swift
+toggleSwitch.rx.isOn
+  .subscribe(onNext: { isOn in
+    print(isOn ? "It's ON" : "It's OFF")
+  })
+```
+
+`rx.isOn` 속성을 `UISwitch` 클래스에 추가하여 유용한 이벤트를 옵저버블 시퀀스로 subscribe
+
+![https://assets.alexandria.raywenderlich.com/books/rxs/images/cedb9fef08575f6d7985d0d78f296bd79ecf1f61c42dc703cc45bc0e91765b11/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/cedb9fef08575f6d7985d0d78f296bd79ecf1f61c42dc703cc45bc0e91765b11/original.png)
+
+또한 RxCocoa는 `UITextField`, `URLSession` , `UIViewController` 등에 `rx` 네임스페이스를 추가할 수 있다.
+
+# 1.5 RxSwift 설치
+
+### CocoaPods
+
+```swift
+use_frameworks!
+
+target 'MyTargetName' do
+  pod 'RxSwift', '~> 5.1'
+  pod 'RxCocoa', '~> 5.1'
+end
+```
+
+### Carthage
+
+```swift
+github "ReactiveX/RxSwift" ~> 5.1
+```
+
+# 1.6 RxSwift 및 Combine
+
+### Combine
+
+Apple의 자체 reactive 프레임워크
+
+Rxswift와 Combine은 매우 유사한 개념을 공유한다.
+
+# 1.7 커뮤니티
+
+[http://community.rxswift.org](http://community.rxswift.org/)
+
+RxSwift 커뮤니티는 패턴, 일반적인 기술에 대해 토론하거나 서로 돕는 것에 대해 매우 친절하고 개방적이며 열정적이다.
+
+더 많은 Rx 라이브러리와 실험은 여기에서 찾을 수 있습니다 : [https://github.com/RxSwiftCommunity](https://github.com/RxSwiftCommunity)
+
+RxSwift에 관심이있는 많은 사람들을 만나는 가장 좋은 방법은 라이브러리 전용 Slack 채널이다 :  [http://slack.rxswift.org](http://slack.rxswift.org/)
+
+# 1.8 Where to go from here?
