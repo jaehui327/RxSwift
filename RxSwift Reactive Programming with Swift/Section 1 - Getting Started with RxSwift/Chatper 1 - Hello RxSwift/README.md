@@ -279,11 +279,11 @@ Rx 코드의 세 가지 구성 요소는 다음과 같다:
 
 비동기 이벤트에 대한 타임 라인을 다음과 같이 시각화할 수 있다.
 
-![https://assets.alexandria.raywenderlich.com/books/rxs/images/f8d3cff7dafeb96562b1d9031cf41b30959aea0c036be76b0bb03070e392fed9/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/f8d3cff7dafeb96562b1d9031cf41b30959aea0c036be76b0bb03070e392fed9/original.png)
+![](./images/6.png)
 
 클래스가 서로 통신 할 수 있도록 델리게이트 프로토콜을 사용하거나 클로저를 삽입 할 필요가 없다.
 
-![https://assets.alexandria.raywenderlich.com/books/rxs/images/5e255ce9e0cb680c862ff81cddb3f721957ced5c1fa019660974b265367f0fd2/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/5e255ce9e0cb680c862ff81cddb3f721957ced5c1fa019660974b265367f0fd2/original.png)
+![](./images/7.png)
 
 실제 상황에 대한 아이디어를 얻으려면 두 가지 유형의 관찰 가능한 시퀀스인 `finite` 와 `infinite` 를 살펴보아야 한다.
 
@@ -333,7 +333,7 @@ UI 이벤트는 종종 무한한 observable 시퀀스입니다.
 
 시퀀스는 사실상 무한하고 상태가 있으므로 관찰을 시작할 때 항상 초기 값을 갖게 된다.
 
-![https://assets.alexandria.raywenderlich.com/books/rxs/images/37f39e4b50e8f7ba826a8fd6c8293695a8bb55e51a4c9a15b8a9e1590fd0c20a/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/37f39e4b50e8f7ba826a8fd6c8293695a8bb55e51a4c9a15b8a9e1590fd0c20a/original.png)
+![](./images/8.png)
 
 → 사용자가 기기를 회전하지 않는 경우가 있지만 그렇다고 이벤트 시퀀스가 종료되는 것은 아니고, 이벤트가 발생하지 않을 뿐이다.
 
@@ -396,7 +396,7 @@ UIDevice.rx.orientation
 
 RxSwift는 `subscrption` 과 `scheduler` 사이에서 발송자 역할을 하여 작업 내용을 올바른 컨텍스트로 전송하고 서로의 출력으로 원활하게 작업할 수 있도록 한다.
 
-![https://assets.alexandria.raywenderlich.com/books/rxs/images/28bdd14bbb8cebcb00fcdc724a10d4f34c19a2b14bcdda5c7ed1f59af513b6f4/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/28bdd14bbb8cebcb00fcdc724a10d4f34c19a2b14bcdda5c7ed1f59af513b6f4/original.png)
+![](./images/9.png)
 
 1. `network subscription` 은 "사용자 지정 `NSOperation` 기반 스케줄러"에서 실행되는 코드로 시작한다.
 2. 이 블록에 의한 데이터 출력은 다른 스케줄러에서 실행되는 다음 블록의 입력 역할을 하며, 이는 "concurrent background GCD queue"에서 실행된다.
@@ -410,7 +410,7 @@ ViewModel을 사용하면 `Observable<T>` 프로퍼티를 드러낼 수 있으�
 
 이렇게하면 모델 데이터를 UI에 매우 간단하게 표현하고 코딩할 수 있다.
 
-![https://assets.alexandria.raywenderlich.com/books/rxs/images/0625dc8cc2e93bdc9324fafea84fadaaf4729dfd39d114996486bb185bdb53e0/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/0625dc8cc2e93bdc9324fafea84fadaaf4729dfd39d114996486bb185bdb53e0/original.png)
+![](./images/10.png)
 
 # 1.4 RxCocoa
 
@@ -429,7 +429,7 @@ toggleSwitch.rx.isOn
 
 `rx.isOn` 속성을 `UISwitch` 클래스에 추가하여 유용한 이벤트를 옵저버블 시퀀스로 subscribe
 
-![https://assets.alexandria.raywenderlich.com/books/rxs/images/cedb9fef08575f6d7985d0d78f296bd79ecf1f61c42dc703cc45bc0e91765b11/original.png](https://assets.alexandria.raywenderlich.com/books/rxs/images/cedb9fef08575f6d7985d0d78f296bd79ecf1f61c42dc703cc45bc0e91765b11/original.png)
+![](./images/11.png)
 
 또한 RxCocoa는 `UITextField`, `URLSession` , `UIViewController` 등에 `rx` 네임스페이스를 추가할 수 있다.
 
