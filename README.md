@@ -32,11 +32,38 @@ RxSwift 기본 사항을 다룹니다. 이 섹션을 건너 뛰지 마십시오.
 기본 사항을 마스터했으면 연산자를 사용하여 더 복잡한 Rx 코드를 빌드하는 단계로 넘어갑니다. 오퍼레이터를 사용하면 복잡한 논리를 구축하기 위해 작은 기능을 연결하고 구성 할 수 있습니다.
 
 
+- [ ] Chapter 5: Filtering Operators
+
+
+- [ ] Chapter 6: Filtering Operators in Pactice
+
+
+- [ ] Chapter 7: Transforming Operators
+
+
+- [ ] Chapter 8: Transforming Operators in Practice
+
+
+- [ ] Chapter 9: Combining Operators
+
+
+- [ ] Chapter 10: Combining Operators in Practice
+
+
+- [ ] Chapter 11: Time Based Operators
+
+
 
 
 ### Section 3: iOS Apps with RxCocoa
 
 RxSwift의 기본 사항을 숙지하고 오퍼레이터 사용 방법을 알고 나면 RxSwift 코드를 사용하고 기존 iOS 클래스 및 UI 컨트롤과 통합 할 수 있는 iOS 특정 API로 이동합니다.
+
+
+- [ ] Chapter 12: Beginning RxCocoa
+
+
+- [ ] Chapter 13: Intermediate RxCocoa
 
 
 
@@ -46,11 +73,37 @@ RxSwift의 기본 사항을 숙지하고 오퍼레이터 사용 방법을 알고
 앱에 대한 오류 처리 전략 구축, 대응적인 방식으로 네트워킹 요구 처리, Rx 테스트 작성 등과 같은 더 많은 주제를 살펴 봅니다.
 
 
+- [ ] Chapter 14: Error Handing in Practice
+
+
+- [ ] Chapter 15: Intro To Schedulers
+
+
+- [ ] Chapter 16: Testing with RxTest
+
+
+- [ ] Chapter 17: Creating Custom Reactive Extension
+
+
 
 
 ### Section 5: RxSwift Community Cookbook
 
 사용 가능한 많은 RxSwift 기반 라이브러리는 귀하와 같은 사람들이 커뮤니티에서 만들고 유지 관리합니다. 이 섹션에서는 이러한 프로젝트 중 몇 가지와이를 자신의 앱에서 사용하는 방법을 살펴 보겠습니다.
+
+- [ ] Chapter 18: Table and Collection Views
+
+
+- [ ] Chapter 19: Action
+
+
+- [ ] Chapter 20: RxGesture
+
+
+- [ ] Chapter 21: RxRealm
+
+
+- [ ] Chapter 22: RxAlamofire
 
 
 
@@ -58,3 +111,14 @@ RxSwift의 기본 사항을 숙지하고 오퍼레이터 사용 방법을 알고
 ### Section 6: Putting it All Together
 
 이 책의이 부분에서는 프로덕션 품질의 완전한 iOS 애플리케이션을 빌드하기위한 앱 아키텍처 및 전략을 다룹니다. 프로젝트를 구조화하는 방법을 배우고 데이터 스트림 및 프로젝트 탐색을 설계하는 몇 가지 다른 접근 방식을 탐색합니다.
+
+- [ ] Chapter 23: MVVM with RxSwift
+
+
+- [ ] Chapter 24: Bulding a Complete RxSwift App
+
+
+
+### Conclusion
+
+
