@@ -44,17 +44,24 @@ class ViewController: UIViewController {
         })
     }
     
-    func downloadJson(_ url: String) -> 나중에생기는데이터<String?> {
-        return 나중에생기는데이터() { f in
+    // PromiseKit
+    // Bolt
+    // RxSwift
+    
+    func downloadJson(_ url: String) -> Observable<String?> {
+        // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
+        return Observable.create { f in
             DispatchQueue.global().async {
                 let url = URL(string: url)!
                 let data = try! Data(contentsOf: url)
                 let json = String(data: data, encoding: .utf8)
                 
                 DispatchQueue.main.async {
-                    f(json)
+                    f.onNext(json)
+                    f.onCompleted() // 순환 참조 문제 해결
                 }
             }
+            return Disposables.create()
         }
     }
     
@@ -66,11 +73,20 @@ class ViewController: UIViewController {
         editView.text = ""
         setVisibleWithAnimation(activityIndicator, true)
         
-        let json: 나중에생기는데이터<String?> = downloadJson(MEMBER_LIST_URL)
-
-        json.나중에오면 { json in
-            self.editView.text = json
-            self.setVisibleWithAnimation(self.activityIndicator, false)
-        }
+        // 2. Observable로 오는 데이터를 받아서 처리하는 방법
+        // let disposable =
+        downloadJson(MEMBER_LIST_URL)
+            .subscribe { event in
+                switch event {
+                case let .next(json):
+                    self.editView.text = json
+                    self.setVisibleWithAnimation(self.activityIndicator, false)
+                case .completed:
+                    break
+                case .error(_):
+                    break
+                }
+            }
+//        disposable.dispose()
     }
 }
