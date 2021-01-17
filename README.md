@@ -1,7 +1,13 @@
 # RxSwift
 
-## [RxSwift 4시간에 끝내기 시즌2](https://www.youtube.com/playlist?list=PL03rJBlpwTaBrhux_C8RmtWDI_kZSLvdQ)
-[곰튀김](https://www.youtube.com/channel/UCsrPur3UrxuwGmT1Jq6tkQw)님 유튜브 링크 입니다.
+## [RxSwift 4시간에 끝내기 시즌2](https://github.com/jaehui327/RxSwift/tree/main/RxSwift%2BMVVM%204%EC%8B%9C%EA%B0%84%EC%97%90%20%EB%81%9D%EB%82%B4%EA%B8%B0%20%EC%8B%9C%EC%A6%8C2#rxswiftmvvm-4%EC%8B%9C%EA%B0%84%EC%97%90-%EB%81%9D%EB%82%B4%EA%B8%B0-%EC%8B%9C%EC%A6%8C2)
+[곰튀김 님의 RxSwift 4시간에 끝내기 (시즌2)](https://github.com/iamchiwon/RxSwift_In_4_Hours)를 듣고 정리한 내용입니다. ([유튜브 링크](https://www.youtube.com/channel/UCsrPur3UrxuwGmT1Jq6tkQw))
+
+
+
+---
+
+
 
 ## [RxSwift Reactive Programming with Swift](https://github.com/jaehui327/RxSwift/tree/main/RxSwift%20Reactive%20Programming%20with%20Swift#rxswift-reactive-programming-with-swift)
 Raywenderlich RxSwift 뱀장어책 내용 정리 및 프로젝트
