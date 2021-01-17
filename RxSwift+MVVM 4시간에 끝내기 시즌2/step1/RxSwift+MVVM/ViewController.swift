@@ -52,7 +52,7 @@ class ViewController: UIViewController {
     // 5. Disposed - 모든 동작이 완료 또는 작업 취소
     // ---- 끝 ---- - 끝난 Obsevable은 재사용할 수 없음
     
-    func downloadJson(_ url: String) -> Observable<String?> {
+    func downloadJson(_ url: String) -> Observable<String> {
         // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
         return Observable.create() { emitter in
             let url = URL(string: url)!
@@ -86,12 +86,11 @@ class ViewController: UIViewController {
         setVisibleWithAnimation(activityIndicator, true)
         
         // 2. Observable로 오는 데이터를 받아서 처리하는 방법
-        _ = downloadJson(MEMBER_LIST_URL)
-            .map { json in json?.count ?? 0 } // sugar : operator
-            .filter { cnt in cnt > 0 }
-            .map { "\($0)" }
+        let jsonObservable = downloadJson(MEMBER_LIST_URL)
+        let helloObservable = Observable.just("Hello World")
+            
+        _ = Observable.zip(jsonObservable, helloObservable) { $1 + "\n" + $0 }
             .observeOn(MainScheduler.instance)
-            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .default)) // 위치 상관없이 시작할 때의 스레드를 지정
             .subscribe(onNext: { json in
                 self.editView.text = json
                 self.setVisibleWithAnimation(self.activityIndicator, false)
