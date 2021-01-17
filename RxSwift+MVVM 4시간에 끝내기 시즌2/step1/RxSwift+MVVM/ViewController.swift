@@ -87,18 +87,14 @@ class ViewController: UIViewController {
         
         // 2. Observable로 오는 데이터를 받아서 처리하는 방법
         _ = downloadJson(MEMBER_LIST_URL)
-            .subscribe { event in
-                switch event {
-                case let .next(json):
-                    DispatchQueue.main.async {
-                        self.editView.text = json
-                        self.setVisibleWithAnimation(self.activityIndicator, false)
-                    }
-                case .error:
-                    break
-                case .completed:
-                    break
-                }
-            }
+            .map { json in json?.count ?? 0 } // sugar : operator
+            .filter { cnt in cnt > 0 }
+            .map { "\($0)" }
+            .observeOn(MainScheduler.instance)
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .default)) // 위치 상관없이 시작할 때의 스레드를 지정
+            .subscribe(onNext: { json in
+                self.editView.text = json
+                self.setVisibleWithAnimation(self.activityIndicator, false)
+            })
     }
 }
