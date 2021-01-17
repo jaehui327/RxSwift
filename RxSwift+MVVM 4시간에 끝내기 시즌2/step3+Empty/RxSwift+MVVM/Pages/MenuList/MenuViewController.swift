@@ -67,6 +67,7 @@ class MenuViewController: UIViewController {
     @IBOutlet var totalPrice: UILabel!
 
     @IBAction func onClear() {
+        viewModel.clearAllItemSelections()
     }
 
     @IBAction func onOrder(_ sender: UIButton) {
