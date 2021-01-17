@@ -44,24 +44,36 @@ class ViewController: UIViewController {
         })
     }
     
-    // PromiseKit
-    // Bolt
-    // RxSwift
+    // Observable의 생명주기
+    // 1. Create - 생성
+    // 2. Subscribe - 실행
+    // 3. onNext - 데이터 전달
+    // 4. onCompleted / onError - 완료 / 에러
+    // 5. Disposed - 모든 동작이 완료 또는 작업 취소
+    // ---- 끝 ---- - 끝난 Obsevable은 재사용할 수 없음
     
     func downloadJson(_ url: String) -> Observable<String?> {
         // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
-        return Observable.create { f in
-            DispatchQueue.global().async {
-                let url = URL(string: url)!
-                let data = try! Data(contentsOf: url)
-                let json = String(data: data, encoding: .utf8)
-                
-                DispatchQueue.main.async {
-                    f.onNext(json)
-                    f.onCompleted() // 순환 참조 문제 해결
+        return Observable.create() { emitter in
+            let url = URL(string: url)!
+            let task = URLSession.shared.dataTask(with: url) { (data, _, err) in
+                guard err == nil else {
+                    emitter.onError(err!)
+                    return
                 }
+                
+                if let dat = data, let json = String(data: dat, encoding: .utf8) {
+                    emitter.onNext(json)
+                }
+                
+                emitter.onCompleted()
             }
-            return Disposables.create()
+            
+            task.resume()
+            
+            return Disposables.create() {
+                task.cancel()
+            }
         }
     }
     
@@ -74,19 +86,19 @@ class ViewController: UIViewController {
         setVisibleWithAnimation(activityIndicator, true)
         
         // 2. Observable로 오는 데이터를 받아서 처리하는 방법
-        // let disposable =
-        downloadJson(MEMBER_LIST_URL)
+        _ = downloadJson(MEMBER_LIST_URL)
             .subscribe { event in
                 switch event {
                 case let .next(json):
-                    self.editView.text = json
-                    self.setVisibleWithAnimation(self.activityIndicator, false)
-                case .completed:
+                    DispatchQueue.main.async {
+                        self.editView.text = json
+                        self.setVisibleWithAnimation(self.activityIndicator, false)
+                    }
+                case .error:
                     break
-                case .error(_):
+                case .completed:
                     break
                 }
             }
-//        disposable.dispose()
     }
 }
