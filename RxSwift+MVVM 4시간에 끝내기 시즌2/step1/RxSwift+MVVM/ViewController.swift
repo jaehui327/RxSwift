@@ -32,23 +32,28 @@ class ViewController: UIViewController {
         })
     }
     
+    func downloadJson(_ url: String, _ completion: ((String?) -> Void)?) {
+        DispatchQueue.global().async {
+            let url = URL(string: url)!
+            let data = try! Data(contentsOf: url)
+            let json = String(data: data, encoding: .utf8)
+            DispatchQueue.main.async {
+                completion?(json)
+            }
+        }
+    }
+    
     // MARK: SYNC
-
+    
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
-
+    
     @IBAction func onLoad() {
         editView.text = ""
         setVisibleWithAnimation(activityIndicator, true)
         
-        DispatchQueue.global().async {
-            let url = URL(string: MEMBER_LIST_URL)!
-            let data = try! Data(contentsOf: url)
-            let json = String(data: data, encoding: .utf8)
-            
-            DispatchQueue.main.async {
-                self.editView.text = json
-                self.setVisibleWithAnimation(self.activityIndicator, false)
-            }
+        downloadJson(MEMBER_LIST_URL) { json in
+            self.editView.text = json
+            self.setVisibleWithAnimation(self.activityIndicator, false)
         }
     }
 }
